@@ -1,65 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit</title>
-
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-<body>
-    <form action="" id="eventForm" method="post">
-        <label for="EventName">Event Name</label> <br>
-        <input type="text" id="EventName" name="EventName" placeholder="     Enter event name" required> <br>
 
-        <label for="Location">Location</label> <br>
-        <input type="text" id="Location" name="Location" placeholder="     Enter location of the event" required> <br>
+<body class="h-screen w-full">
+    <div class="w-full h-[90%] p-5 border-5 border-red-500">
+        <h2 class="text-3xl text-center underline">Event Details Form</h2>
+        <form action="" id="eventForm" method="post"
+            class="border border-blue-400 w-[500px] h-full overflow-y-scroll mx-auto my-auto p-5 rounded-lg mt-6 bg-sky-100 text-md flex flex-col gap-3 relative">
+            <div class="w-full border">
+                <label for="EventName">Event Name</label> <br />
+                <input type="text" id="EventName" name="EventName" placeholder="Enter event name" required
+                    class="w-full p-3 rounded-lg" />
+                <br />
+            </div>
+            <div class="w-full border">
+                <label for="Location">Location</label> <br />
+                <input type="text" id="Location" name="Location" placeholder="Enter location of the event" required
+                    class="w-full p-3 rounded-lg" />
+                <br />
+            </div>
+            <div class="w-full border">
+                <label for="StartTime">Start Time</label> <br />
+                <input type="time" id="StartTime" name="StartTime"
+                    placeholder="Enter the expected time to start the event" required class="w-full p-3 rounded-lg" />
+                <br />
+            </div>
+            <div class="w-full border">
+                <label for="EndTime">End Time</label> <br />
+                <input type="time" id="EndTime" name="EndTime" placeholder="Enter the expected time to end the event"
+                    required class="w-full p-3 rounded-lg" />
+                <br />
+            </div>
 
-        <label for="StartTime">Start Time</label> <br>
-        <input type="text" id="StartTime" name="StartTime" placeholder="     Enter the expected time to start the event" required> <br>
-
-        <label for="EndTime">End Time</label> <br>
-        <input type="text" id="EndTime" name="EndTime" placeholder="     Enter the expected time to end the event" required> <br>
-
-        <label for="Date">Date</label> <br>
-        <input type="text" id="Date" name="Date" placeholder="     Enter event date" required> <br>
-        <textarea name="Description" id="Description" cols="30" rows="10" placeholder="     Enter event description..." required></textarea>
-        <input type="submit" value="Submit" id="submit" />
-    </form>
-    
-
-    <script>
-        document.getElementById('eventForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const eventName = document.getElementById('EventName').value;
-            const location = document.getElementById('Location').value;
-            const startTime = document.getElementById('StartTime').value;
-            const endTime = document.getElementById('EndTime').value;
-            const date = document.getElementById('Date').value;
-            const description = document.getElementById('Description').value;
-
-            const eventData = {
-                name: eventName,
-                eventLocation: location,
-                startTime: startTime,
-                endTime: endTime,
-                date: date,
-                description: description,
-            };
-
-            axios.post('https://virtual-tour-nine.vercel.app/api/events', eventData)
-                .then(response => {
-                    console.log('Event submitted successfully:', response.data);
-                    // Handle success response as needed
-                })
-                .catch(error => {
-                    console.error('Error submitting event:', error);
-                    // Handle errors appropriately
-                });
-        });
-    </script>
-
+            <div class="w-full border">
+                <label for="Date">Date</label> <br />
+                <input type="date" id="Date" name="Date" placeholder="Enter event date" required
+                    class="w-full p-3 rounded-lg" />
+                <br />
+            </div>
+            <div class="w-full border">
+                <textarea name="Description" id="Description" rows="10" cols="40"
+                    placeholder="Enter event description..." required class="w-full p-3 rounded-lg"></textarea>
+            </div>
+            <input type="submit" value="Submit" id="submit"
+                class="border border-green-400 bg-white w-[200px] rounded-lg p-3 text-center mx-auto text-green-700 hover:bg-green-400 transition-all hover:text-white"
+                class="w-full p-3 rounded-lg" />
+        </form>
+    </div>
 </body>
+<script>
+    document.getElementById('eventForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+        function convertTimeFormat(timeString) {
+            // Split the time string into hours and minutes
+            const [hours, minutes] = timeString.split(':').map(Number);
+
+            // Convert hours to 12-hour format
+            const twelveHour = hours % 12 || 12;
+
+            // Determine if it's AM or PM
+            const period = hours < 12 ? 'AM' : 'PM';
+
+            // Construct the new time format
+            const newTimeFormat = `${twelveHour}:${minutes} ${period}`;
+
+            return newTimeFormat;
+        }
+        const eventName = document.getElementById('EventName').value;
+        const location = document.getElementById('Location').value;
+        const startTime = convertTimeFormat(document.getElementById('StartTime').value);
+        const endTime = convertTimeFormat(document.getElementById('EndTime').value);
+        const date = document.getElementById('Date').value;
+        const description = document.getElementById('Description').value;
+
+        const eventData = {
+            name: eventName,
+            eventLocation: location,
+            startTime: startTime,
+            endTime: endTime,
+            date: date,
+            description: description,
+        };
+        console.log(eventData)
+        axios.post('https://virtual-tour-nine.vercel.app/api/events', eventData)
+            .then(response => {
+                console.log('Event submitted successfully:', response.data);
+                // Handle success response as needed
+            })
+            .catch(error => {
+                console.error('Error submitting event:', error);
+                // Handle errors appropriately
+            });
+    });
+
+</script>
+
 </html>
